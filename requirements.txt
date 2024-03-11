@@ -1,0 +1,5 @@
+functions-framework==3.*
+polars
+google-cloud-bigquery
+googlemaps
+google-cloud-storage

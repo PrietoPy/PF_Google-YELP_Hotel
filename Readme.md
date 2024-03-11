@@ -1,65 +1,95 @@
-### 1. Configuración de Firebase:
+![wink](./src/HotelwiseTD.PNG)
 
-#### a. Configurar un proyecto en Firebase:
+### 1. Configuración de GCP:
 
-- Ve a la Consola de Firebase.
-- Crea un nuevo proyecto Firebase o selecciona uno existente.
+#### a. Crear Proyecto:
 
-#### b. Obtener credenciales de Firebase:
+- Definir nombre y region del proyecto.
 
-- En la consola de Firebase, ve a "Configuración del proyecto" -> "Cuentas de servicio".
-- Añade una nueva clave de cuenta de servicio y descarga el archivo JSON.
+#### b. Configuración del proyecto:
 
-### 2. Configuración de Google Cloud Platform (GCP):
-
-#### a. Crear un proyecto en GCP:
-
-- Abre la Consola de Google Cloud.
-- Crea un nuevo proyecto o selecciona uno existente.
-
-#### b. Habilitar APIs:
-
-- Asegúrate de habilitar las siguientes APIs en tu proyecto:
-  - Cloud Storage API
-  - Cloud Scheduler API
+- habilitar las APIS: 
+  
+  - Geocoding API
+  - Cloud Functions API
+  - Cloud Pub/Sub API
+  - Eventarc API
+  - Artifact Registry API
+  - Cloud Logging API
+  - Cloud Run Admin API
   - BigQuery API
-  - Cloud Firestore API (Firebase)
+  - Cloud Build API
+  - Cloud Dataplex API
+  - Service Usage API
+  - Analytics Hub API
+  - BigQuery Connection API
+  - BigQuery Data Policy API
+  - BigQuery Migration API
+  - BigQuery Reservation API
+  - BigQuery Storage API
+  - Cloud Datastore API
+  - Cloud Monitoring API
+  - Cloud SQL
+  - Cloud Storage
+  - Cloud Storage AP
+  - Cloud Trace API
+  - Container Registry API
+  - Dataform API
+  - Google Cloud APIs
+  - Google Cloud Storage JSON API
+  - Legacy Cloud Source Repositories
+  - Service Management API 
 
-#### c. Configurar credenciales:
+- Cloud Storage
+  
+  - Creamos el Bucket donde se almacenaran los datos crudos.
+  - Creamos el Bucket donde se almacenara el resultado del ETL.
 
-- Ve a la sección "Credenciales" en la consola de GCP.
-- Crea una cuenta de servicio y descarga la clave JSON. Esta clave se utilizará para autenticar Airflow con GCP.
+- Credenciales:
+  
+  - Agregamos los roles necesarios a la cuenta de servicios 'Default compute service account':
+    
+    - Administrador de objetos de Storage
+    
+    - Editor
+    
+    - Editor de datos de BigQuery
+    
+    - Invocador de Cloud Run
+    
+    - Receptor de eventos de Eventarc
+    
+    - Usuario de trabajo de BigQuery
 
-### 3. Configuración de Google Cloud Storage (GCS):
+#### c. Bigquery
 
-#### a. Crear un bucket de Cloud Storage:
+- Creamos un conjunto de datos la nombramos y seleccionamos la region.
+  - Creamos una tabla.
+    - Seleccionamos el Proyecto y conjuno de datos de destino.
+    - Nombramos la tabla
+    - Cargamos las columnas y tipos de datos necesarios.
 
-- En la consola de GCP, ve a la sección "Almacenamiento" y crea un nuevo bucket.
+#### d. Cloud Function:
 
-#### b. Configurar permisos del bucket:
+- Creamos una funcion:
+- - Nombramos y elegimos la region.
+  - Configuramos los Workers (CPU, RAM, Instancias)
+- Configuramos Entorno de Ejecución
+  - Seleccionamos el entorno con el lenguaje deseado en este caso Python 3.11.
+  - Completamos el archivo 'main.py' con la logica para el ETL.
+  - Completamos el archivo 'requeriments.txt' con las librerias necesarias.
+  - Porbamos la ejecucion de la función e implementamos.
 
-- Asegúrate de que la cuenta de servicio de tu instancia de Cloud Composer tenga permisos de lectura y escritura en el bucket.
+#### Proceso Flujo de datos:
 
-### 4. Configuración de Apache Airflow en GCP:
 
-#### a. Crear una instancia de Cloud Composer (Apache Airflow en GCP):
+![wink](./src/Stack.PNG)
 
-- En la consola de GCP, ve a la sección "Composer".
-- Crea una nueva instancia de Cloud Composer, seleccionando la ubicación y configurando la instancia.
 
-#### b. Configurar variables en Cloud Composer:
+Al momento de realizar la carga del archivo al ***Cloud Storage*** , ***Cloud Fuction*** genera un evento con los datos de este archivo, quien llama a ***Cloud Run***, este levanta un contenedor alojado en ***Artifact Registry*** donde ejecuta la logica de la funcion con los datos del evento abriendo el archivo del cloud estorage, realizando las transformaciones y obteniendo los datos geograficos de la ***Geocoding API***, una vez finalizado las tareas realiza la carga a la base de datos de ***Big Query***.
 
-- En la consola de GCP, ve a la sección "Composer" y selecciona tu instancia.
-- Configura las siguientes variables para Airflow:
-  - `gcs_bucket`: Nombre de tu bucket de Cloud Storage.
-  - `firebase_project_id`: ID del proyecto Firebase.
-  - `firebase_credentials`: Contenido del archivo JSON de credenciales de Firebase.
+[Logica ETL](https://github.com/HotelWise/HotelWise/blob/ELT-Google/main.py)
 
-### 5. Configuración del DAG en Apache Airflow:
+[Requerimientos](https://github.com/HotelWise/HotelWise/blob/ELT-Google/requirements.txt)
 
-- Crea un DAG de Airflow que utilice las conexiones de GCS y Firebase.
-- Utiliza los operadores de Airflow para realizar tareas como copiar archivos a GCS y manipular datos en Firebase.
-
-### 6. Implementar el DAG en Cloud Composer:
-
-- Despliega tu DAG en tu instancia de Cloud Composer.
+[EDA](https://github.com/HotelWise/HotelWise/blob/ELT-Google/Notebooks/EDA_PF.ipynb)
