@@ -82,11 +82,15 @@
 
 #### Proceso Flujo de datos:
 
-
 ![wink](./src/Stack.PNG)
 
-
 Al momento de realizar la carga del archivo al ***Cloud Storage*** , ***Cloud Fuction*** genera un evento con los datos de este archivo, quien llama a ***Cloud Run***, este levanta un contenedor alojado en ***Artifact Registry*** donde ejecuta la logica de la funcion con los datos del evento abriendo el archivo del cloud estorage, realizando las transformaciones y obteniendo los datos geograficos de la ***Geocoding API***, una vez finalizado las tareas realiza la carga a la base de datos de ***Big Query***.
+
+
+
+[video proceso flujo de datos](https://drive.google.com/file/d/1ssO7LaUiknbyJV1gNeq8XJMGkfoJqWCf/view?usp=drive_link)
+
+
 
 [Logica ETL](https://github.com/HotelWise/HotelWise/blob/ELT-Google/main.py)
 
